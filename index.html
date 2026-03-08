@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State.io Tactics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser-arcade-physics.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="game-container"></div>
+
+    <div id="lobby-ui">
+        <div id="status-container">
+            <header>
+                <h1 id="game-title">Multiplayer-Battle <span class="neon-text">TACTICS</span></h1>
+                <div class="divider"></div>
+            </header>
+            
+            <section id="user-section">
+                <div id="language-selector">
+                    <span onclick="setLanguage('tr')">TR</span> | 
+                    <span onclick="setLanguage('ru')">RU</span>
+                </div>
+                <input type="text" id="username-input" placeholder="İSİM..." maxlength="12">
+            </section>
+
+            <section id="map-selection-area">
+                <h3>HARİTALAR</h3>
+                <div id="map-list" class="custom-scrollbar"></div>
+                <div id="map-details">
+                    <p id="selected-map-desc">Harita seçimi bekleniyor...</p>
+                </div>
+            </section>
+
+            <section id="matchmaking-area">
+                <div id="player-slots">
+                    <div id="slot-p1" class="player-card">
+                        <span class="name">BEKLENİYOR...</span>
+                    </div>
+                    <div class="vs-badge">VS</div>
+                    <div id="slot-p2" class="player-card">
+                        <span class="name">BEKLENİYOR...</span>
+                    </div>
+                </div>
+            </section>
+            
+            <footer id="action-area">
+                <button id="ready-btn" style="display: none;">HAZIR OL</button>
+                <p id="wait-msg"> İsmi girin ve bölge seçin.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/game.js"></script>
+</body>
+</html>
