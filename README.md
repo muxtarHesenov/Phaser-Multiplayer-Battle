@@ -30,10 +30,6 @@ A real-time strategy battle game built with **Phaser 3** and **Socket.io**.
 3. `npm start`
 4. Open `http://localhost:4000`
 
-### License
-
-MIT
-
 ---
 
 **Live Demo:** https://phaser-multiplayer-battle.onrender.com/
