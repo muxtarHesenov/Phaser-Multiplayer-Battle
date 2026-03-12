@@ -1,2 +1,4 @@
 node_modules/
 .env
+provinces.js
+tr.svg

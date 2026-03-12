@@ -3,62 +3,82 @@ const http = require('http');
 const { Server } = require('socket.io');
 const maps = require('./maps');
 
+const {
+    initRoomManager, assignRole, resetPlayer, updatePing,
+    setPlayerName, setPlayerReady, bothReady,
+    setSelectedMap, getSelectedMap, getPlayers
+} = require('./server/roomManager');
+
+const {
+    init, getGameActive, setGameActive,
+    initGameState, resetGame, startRegenLoop
+} = require('./server/gameManager');
+
+const { registerTroopHandler } = require('./server/troopHandler');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 app.use(express.static(__dirname));
 
-let players = {
-    p1: { id: null, ready: false, name: "Oyuncu 1" },
-    p2: { id: null, ready: false, name: "Oyuncu 2" }
-};
-let gameActive = false;
-let selectedMapKey = Object.keys(maps)[0];
+init(io);
+initRoomManager(Object.keys(maps), io);
+startRegenLoop();
 
 io.on('connection', (socket) => {
-    let role = null;
-    if (!players.p1.id) { players.p1.id = socket.id; role = 'p1'; }
-    else if (!players.p2.id) { players.p2.id = socket.id; role = 'p2'; }
-    else { role = 'spectator'; }
+    const role = assignRole(socket.id);
 
     socket.emit('assign_role', role);
-    socket.emit('init_maps', { mapList: Object.keys(maps), currentMap: selectedMapKey });
-    io.emit('update_lobby', players);
+    socket.emit('init_maps', {
+        mapList: Object.keys(maps),
+        currentMap: getSelectedMap()
+    });
+    io.emit('update_lobby', getPlayers());
+
+    // Heartbeat
+    socket.on('ping', () => {
+        updatePing(role);
+    });
 
     socket.on('update_name', (name) => {
-        if (players[role]) { players[role].name = name; io.emit('update_lobby', players); }
+        setPlayerName(role, name);
+        io.emit('update_lobby', getPlayers());
     });
 
     socket.on('change_map', (mapKey) => {
-        if (!gameActive && maps[mapKey]) {
-            selectedMapKey = mapKey;
-            io.emit('map_updated', selectedMapKey);
+        if (!getGameActive() && maps[mapKey]) {
+            setSelectedMap(mapKey);
+            io.emit('map_updated', mapKey);
         }
     });
 
     socket.on('player_ready', () => {
-        if (players[role]) {
-            players[role].ready = true;
-            io.emit('update_lobby', players);
-            if (players.p1.ready && players.p2.ready) {
-                gameActive = true;
-                io.emit('start_game', maps[selectedMapKey]);
-            }
+        const players = getPlayers();
+        if (!players[role]) return;
+
+        setPlayerReady(role);
+        io.emit('update_lobby', getPlayers());
+
+        if (bothReady()) {
+            setGameActive(true);
+            const mapData = maps[getSelectedMap()];
+            initGameState(mapData);
+            io.emit('start_game', mapData);
         }
     });
 
-    socket.on('send_troops', (data) => socket.broadcast.emit('receive_troops', data));
-    socket.on('game_over', (winner) => { if(gameActive) { gameActive = false; io.emit('announce_winner', winner); } });
+    registerTroopHandler(socket, io, role);
 
     socket.on('disconnect', () => {
+        const players = getPlayers();
         if (players[role] && players[role].id === socket.id) {
-            players[role].id = null; players[role].ready = false;
-            gameActive = false;
+            resetPlayer(role);
+            resetGame();
             io.emit('reset_to_lobby');
         }
     });
 });
 
 const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => console.log(`Port ${PORT}`));
+server.listen(PORT, () => console.log(`Port ${PORT} aktif`));

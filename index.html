@@ -14,13 +14,13 @@
     <div id="lobby-ui">
         <div id="status-container">
             <header>
-                <h1 id="game-title">Multiplayer-Battle <span class="neon-text">TACTICS</span></h1>
+                <h1 id="game-title">STATE.IO <span class="neon-text">TACTICS</span></h1>
                 <div class="divider"></div>
             </header>
-            
+
             <section id="user-section">
                 <div id="language-selector">
-                    <span onclick="setLanguage('tr')">TR</span> | 
+                    <span onclick="setLanguage('tr')">TR</span> |
                     <span onclick="setLanguage('ru')">RU</span>
                 </div>
                 <input type="text" id="username-input" placeholder="İSİM..." maxlength="12">
@@ -45,15 +45,17 @@
                     </div>
                 </div>
             </section>
-            
+
             <footer id="action-area">
                 <button id="ready-btn" style="display: none;">HAZIR OL</button>
-                <p id="wait-msg"> İsmi girin ve bölge seçin.</p>
+                <p id="wait-msg">İsmi girin ve bölge seçin.</p>
             </footer>
         </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/ui.js"></script>
     <script src="/js/game.js"></script>
+    <script src="/js/socket.js"></script>
 </body>
 </html>
