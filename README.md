@@ -1,35 +1,45 @@
-# State.io Clone (Multiplayer)
+# Phaser Multiplayer Battle
 
-A real-time strategy battle game built with **Phaser 3** and **Socket.io**.
+A real-time 2-player strategy game built with Phaser 3 and Socket.io.
 
-### Features
+## Gameplay
 
-* **Real-time Multiplayer:** Synchronized troop movements and state captures via WebSockets.
-* **Lobby System:** Player naming, role assignment (P1, P2, Spectator), and readiness checks.
-* **Map Selection:** 8 unique tactical maps including *Vortex*, *Neural Network*, and *Fortress*.
-* **Dynamic Scaling:** Responsive neon UI with a custom grid-based map selector.
+Two players compete to capture all territories on the map. Each player starts with their own base and sends troops to neutral or enemy territories. The player who eliminates all enemy territories wins.
 
-### Tech Stack
+- Drag from your territory to a target to send troops
+- Hover over multiple targets while dragging to split troops
+- Captured territories generate troops over time
+- Distance matters — troops take longer to reach farther territories
 
-* **Engine:** Phaser 3
-* **Backend:** Node.js / Express
-* **Networking:** Socket.io
-* **Styling:** CSS3 (Neon/Cyberpunk theme)
+## Tech Stack
 
-### Project Structure
+- **Frontend:** Phaser 3, vanilla JS
+- **Backend:** Node.js, Express, Socket.io
 
-* `server.js`: Node.js server handling socket events and game state.
-* `maps.js`: Configuration for node coordinates, regen rates, and initial army counts.
-* `js/game.js`: Client-side Phaser scene logic and troop visualizations.
-* `css/style.css`: Lobby interface and custom scrollbar styling.
+## Project Structure
+```
+├── server.js
+├── maps.js
+├── server/
+│   ├── roomManager.js
+│   ├── gameManager.js
+│   └── troopHandler.js
+├── js/
+│   ├── game.js
+│   ├── socket.js
+│   └── ui.js
+└── css/
+    └── style.css
+```
 
-### Installation
+## Getting Started
+```bash
+npm install
+node server.js
+```
 
-1. `git clone https://github.com/muxtarHesenov/Phaser-Multiplayer-Battle.git`
-2. `npm install`
-3. `npm start`
-4. Open `http://localhost:4000`
+Open two browser tabs at `http://localhost:4000` to play locally.
 
----
+## Maps
 
-**Live Demo:** https://phaser-multiplayer-battle.onrender.com/
+10 maps with different strategic layouts — Cross, Diamond, Wings, Three Bridges, Star, Fortress, Hub, Pincer, Zigzag, Twin Towers.
